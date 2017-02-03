@@ -1,0 +1,22 @@
+body{
+    width:80%;
+    margin:0 auto;
+}
+#showBox{
+    min-height:150px;
+    display:flex;
+    flex-direction:row;
+    flex-wrap:nowrap;
+    justify-content:center;
+    align-items:flex-end;
+}
+
+#showBox div{
+    border:1px solid black;
+    margin:0 1px;
+    width:0px;
+    background-color:#ccc;
+    font-size:10px;
+    color:#000;
+    text-align:center;
+}
