@@ -2,19 +2,12 @@ const canvas = document.getElementById('percolationBox')
 canvas.width = 600;
 canvas.height = 600;
 const context = canvas.getContext('2d');
-
-
-
-
 context.lineWidth = 2;
 
 
-let list = [],
+let list = new Array(900),
     flagArr = []
 for (var i = 0; i < 900; i++) {
-    list.push({
-        isBlank: false
-    })
     flagArr.push(i)
 }
 
@@ -41,8 +34,7 @@ function checkPercolation() {
         // debugger
     }
 }
-function draw() {
-    checkPercolation()
+function draw(lastIndex) {
     context.clearRect(0, 0, 600, 600);
     for (var i = 0; i < 900; i++) {
         var col = i % 30
@@ -51,7 +43,7 @@ function draw() {
             y1 = row * 20,
             x2 = x1 + 20,
             y2 = y1 + 20
-        if (!list[i].isBlank) {
+        if (typeof list[i] != 'number') {
             context.fillStyle = 'rgb(200, 0, 0)';
             context.strokeStyle = 'rgb(0,0,0)';
             context.fillRect(x1, y1, 20, 20);
@@ -59,67 +51,46 @@ function draw() {
         } else if (getAncestor(i) == -1) {
             context.fillStyle = 'rgb(0, 0, 200)';
             context.fillRect(x1, y1, 20, 20);
+            if (lastIndex == i) {
+                context.fillStyle = 'rgb(255, 255, 0)';
+                context.fillText(i, x1 + 1, y1 + 15);
+            }
         }
-        context.fillStyle = 'rgb(200, 200, 0)';
-        context.fillText(i, x1 + 1, y1 + 15);
     }
+    checkPercolation()
 }
 draw()
 
-function set(i) {
-    var index = list[i].father
-    if (index != i) {
-        set(index)
-    } else {
-        list[i].father = -1
-    }
-}
-
-function getans(i) {
-    var index = list[i].father
-    if (index != i) {
-        set(index)
-    } else if (index == -1) {
-        return -1
-    } else {
-        list[i].father = -1
-    }
-}
-
 function getAncestor(index) {
-    let aim = list[index]
-    if (aim.father == -1) {
+    if (list[index] == -1) {
         return -1
-    } else if (aim.father == index) {
-        return aim.father
-    } else if (aim.father) {
-        return getAncestor(aim.father)
+    } else if (list[index] == index) {
+        return index
+    } else if (list[index]) {
+        return getAncestor(list[index])
     }
 }
 
 function setAncestor(index) {
-    let aim = list[index]
-    if (aim.father == -1) {
-    } else if (aim.father == index) {
+    if (list[index] == -1) {
+    } else if (list[index] == index) {
         return index
-    } else if (aim.father) {
-        return setAncestor(aim.father)
+    } else if (list[index]) {
+        return setAncestor(list[index])
     }
 }
 
 
 function handleAimm(index) {
-    let aim = list[index]
-    aim.isBlank = true
     if (index < 30) {
-        aim.father = -1
-        if (list[index + 30].father) {
+        list[index] = -1
+        if (list[index + 30]) {
             if (setAncestor(index + 30)) {
-                list[setAncestor(index + 30)].father = -1
+                list[setAncestor(index + 30)] = -1
             }
         }
     } else {
-        aim.father = index
+        list[index] = index
         console.log('-------------------')
         var temp = [index]
         if (index - 30 > 0) {
@@ -141,33 +112,33 @@ function handleAimm(index) {
         let min = Math.min.apply(null, temp)
         // console.log(temp, min)
 
-        list[setAncestor(index)].father = min
+        list[setAncestor(index)] = min
         if (index - 30 > 0) {
             // console.log(index - 30, setAncestor(index - 30))
             if (setAncestor(index - 30)) {
-                list[setAncestor(index - 30)].father = min
+                list[setAncestor(index - 30)] = min
             }
         }
         if (index + 30 < 900) {
             // console.log(index + 30, setAncestor(index + 30))
             if (setAncestor(index + 30)) {
-                list[setAncestor(index + 30)].father = min
+                list[setAncestor(index + 30)] = min
             }
         }
         if (index % 30) {
             // console.log(index - 1, setAncestor(index - 1))
             if (setAncestor(index - 1)) {
-                list[setAncestor(index - 1)].father = min
+                list[setAncestor(index - 1)] = min
             }
         }
         if ((index + 1) % 30) {
             // console.log(index + 1, setAncestor(index + 1))
             if (setAncestor(index + 1)) {
-                list[setAncestor(index + 1)].father = min
+                list[setAncestor(index + 1)] = min
             }
         }
     }
-    draw()
+    draw(index)
 }
 
 
