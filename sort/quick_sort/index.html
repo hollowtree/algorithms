@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-cmn-Hans">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>let</title>
+    <link rel="stylesheet" href="//hollowtree.github.io/tools/web.css">
+    <script src="//hollowtree.github.io/tools/web.js"></script>
+
+</head>
+
+<body>
+    <script>
+        function swap(array, i, j) {
+            let temp = array[i]
+            array[i] = array[j]
+            array[j] = temp
+        }
+
+
+        let arr = [],
+            length = 12
+        // --- 生成数组
+        for (let i = 0; i < length; i++) {
+            arr.push(Math.floor(Math.random() * 100))
+        }
+        console.log('start:', arr, '\n\n')
+
+        arr = [69, 62, 35, 40, 62, 65, 84, 94, 62, 13, 52, 67]
+        // --- 打乱数组
+        for (let i = length; i > 1; i--) {
+            let randomIndex = Math.floor(Math.random() * i)
+            swap(arr, i - 1, randomIndex)
+        }
+
+
+        // --- 排序开始
+        console.log('\n')
+        function sort(array, startIndex = 0, endIndex = array.length - 1) {
+            let s = startIndex,
+                l = startIndex + 1,
+                r = endIndex
+
+            while (l < r) {
+                while (array[l] <= array[s] && l < r) {
+                    l++
+                }
+                while (array[r] >= array[s] && l < r) {
+                    r--
+                }
+                if (l == r) {
+
+                    swap(arr, s, l - 1)
+                    sort(array, 0, l - 2)
+                    sort(array, l, endIndex)
+                    console.log('----', l, arr)
+                } else {
+                    swap(arr, l, r)
+                    console.log(arr, l, r, '\n\n')
+                }
+            }
+        }
+        sort(arr)
+
+
+
+    </script>
+</body>
+
+</html>
