@@ -19,53 +19,71 @@
             array[j] = temp
         }
 
-
-        let arr = [],
-            length = 12
-        // --- 生成数组
-        for (let i = 0; i < length; i++) {
-            arr.push(Math.floor(Math.random() * 100))
-        }
-        console.log('start:', arr, '\n\n')
-
-        arr = [69, 62, 35, 40, 62, 65, 84, 94, 62, 13, 52, 67]
-        // --- 打乱数组
-        for (let i = length; i > 1; i--) {
-            let randomIndex = Math.floor(Math.random() * i)
-            swap(arr, i - 1, randomIndex)
+        function shuffle(array) {
+            for (let i = length; i > 1; i--) {
+                let randomIndex = Math.floor(Math.random() * i)
+                swap(array, i - 1, randomIndex)
+            }
         }
 
-
-        // --- 排序开始
-        console.log('\n')
-        function sort(array, startIndex = 0, endIndex = array.length - 1) {
-            let s = startIndex,
-                l = startIndex + 1,
-                r = endIndex
-
-            while (l < r) {
-                while (array[l] <= array[s] && l < r) {
-                    l++
+        function partition(array, lo, hi) {
+            let i = lo, j = hi + 1
+            while (true) {
+                let v = array[lo]
+                while (array[++i] < v) {
+                    if (i == hi) {
+                        break
+                    }
                 }
-                while (array[r] >= array[s] && l < r) {
-                    r--
+                while (array[--j] > v) {
+                    if (j == lo) {
+                        break
+                    }
                 }
-                if (l == r) {
-
-                    swap(arr, s, l - 1)
-                    sort(array, 0, l - 2)
-                    sort(array, l, endIndex)
-                    console.log('----', l, arr)
+                if (i >= j) {
+                    break
                 } else {
-                    swap(arr, l, r)
-                    console.log(arr, l, r, '\n\n')
+                    swap(array, i, j)
+                }
+            }
+            return j
+        }
+
+        function sort(array, lo = 0, hi = array.length - 1) {
+            if (hi <= lo) return
+            shuffle(array)
+            let j = partition(array, lo, hi)
+            swap(array, lo, j)
+            sort(array, lo, j - 1)
+            sort(array, j + 1, hi)
+        }
+    </script>
+    <script>
+        function test() {
+            let arr = [],
+                length = 100
+
+            for (let i = 0; i < length; i++) {
+                arr.push(Math.floor(Math.random() * 100))
+            }
+            sort(arr)
+
+            let isSort = true
+            for (let j = 1, length = arr.length; j < length; j++) {
+                if (arr[j] < arr[j - 1]) {
+                    console.log('failed')
+                    break
                 }
             }
         }
-        sort(arr)
 
-
-
+        performance.mark('sort-start')
+        for (var i = 0; i < 10000; i++) {
+            test()
+        }
+        performance.mark('sort-end')
+        performance.measure('sort', 'sort-start', 'sort-end')
+        console.log(performance.getEntriesByName('sort')[0].duration)
     </script>
 </body>
 
